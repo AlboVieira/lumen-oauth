@@ -28,6 +28,7 @@ $app = new Laravel\Lumen\Application(
  */
 class_alias('Illuminate\Support\Facades\Config', 'Config');
 
+$app->configure('cors');
 $app->configure('database');
 $app->configure('auth');
 //$app->configure('api');
@@ -56,6 +57,13 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+/* tarts cookie instance */
+$app->singleton('cookie', function () use ($app) {
+    return $app->loadComponent('session', 'Illuminate\Cookie\CookieServiceProvider', 'cookie');
+});
+
+$app->bind('Illuminate\Contracts\Cookie\QueueingFactory', 'cookie');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -67,19 +75,17 @@ $app->singleton(
 |
 */
 
+
 // Enable auth middleware (shipped with Lumen)
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'cors' => App\Http\Middleware\Authenticate::class,
 ]);
 
+$app->middleware([
+    'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse'
+]);
 
-// $app->middleware([
-//    App\Http\Middleware\ExampleMiddleware::class
-// ]);
-
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +101,9 @@ $app->routeMiddleware([
 /** PassPort Providers **/
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+
+/** Cors **/
+$app->register(Barryvdh\Cors\LumenServiceProvider::class);
 
 /** Dingo Provider **/
 //$app->register(\Dingo\Api\Provider\LumenServiceProvider::class);
