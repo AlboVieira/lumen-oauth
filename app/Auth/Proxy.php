@@ -56,13 +56,17 @@ class Proxy
                 true // HttpOnly
             );
 
-            $response = [
+            /*$response = [
                 'accessToken'            => $response->access_token,
                 'accessTokenExpiration'  => $response->expires_in
+            ];*/
+            return [
+                'access_token'            => $response->access_token,
+                'access_token_expiration'  => $response->expires_in
             ];
         }
 
-        $response = response()->json($response);
+       /* $response = response()->json($response);
         $response->setStatusCode($guzzleResponse->getStatusCode());
 
         $headers = $guzzleResponse->getHeaders();
@@ -70,6 +74,7 @@ class Proxy
             $response->header($headerType, $headerValue);
         }
 
-        return $response;
+        return $response;*/
+
     }
 }

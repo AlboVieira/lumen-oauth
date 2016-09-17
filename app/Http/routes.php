@@ -13,8 +13,8 @@
 
 $app->group(['middleware' => 'cors' ], function($app){
 
-    $app->post('login', function() use($app) {
-        $credentials = app()->make('request')->input("credentials");
+    $app->post('auth/login', function() use($app) {
+        $credentials = app()->make('request')->all();
         return $app->make('App\Auth\Proxy')->attemptLogin($credentials);
     });
 
